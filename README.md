@@ -29,7 +29,7 @@ Open it in any browser
 Click Start System, then try the buttons under Simulation Scenarios
 
 
-Or view it live via GitHub Pages: (add your Pages link here once enabled)
+Or view it live via GitHub Pages: https://elfcrnokr.github.io/gas-unit-pacemaker-simulation/
 
 Background
 
