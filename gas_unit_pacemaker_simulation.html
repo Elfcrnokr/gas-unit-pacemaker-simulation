@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>GAS UNIT PACEMAKER - Anti-Complication System</title>
+ <style>
+ * {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ }
+ body {
+ font-family: 'Arial', sans-serif;
+ background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+ min-height: 100vh;
+ color: #111;
+ }
+ .container {
+ max-width: 1200px; margin: 0 auto;
+ padding: 20px;
+ }
+ header {
+ text-align: center;
+ background: rgba(255, 255, 255, 0.08);
+ border: 1px solid rgba(255, 0, 0, 0.4);
+ backdrop-filter: blur(10px);
+ padding: 20px;
+ border-radius: 10px;
+ margin-bottom: 20px;
+ }
+ header h1 {
+ color: #fff;
+ margin-bottom: 10px;
+ }
+ .status-section {
+ display: flex;
+ justify-content: space-around;
+ flex-wrap: wrap;
+ margin-bottom: 30px;
+ }
+ .status-box {
+ background: #ffffff;
+ border: 1px solid #000000;
+ backdrop-filter: blur(10px);
+ padding: 25px;
+ border-radius: 15px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+ text-align: center;
+ flex: 1;
+ min-width: 250px;
+ margin: 10px;
+ transition: transform 0.3s ease-in-out;
+ }
+ .status-box:hover {
+ transform: translateY(-5px);
+ }
+ .status-box h2 {
+ color: #000000;
+ margin-bottom: 15px;
+ font-size: 1.8em;
+ }
+ .status-value {
+ font-size: 3em;
+ font-weight: bold;
+ color: #000000;
+ margin-bottom: 10px;
+ }
+ .status-label {
+ font-size: 1.1em;
+ color: #444;
+ } .status-normal .status-value { color: #000000; }
+ .status-warning .status-value { color: #b30000; }
+ .status-emergency .status-value { color: #ff0000; }
+ .controls-section {
+ background: #ffffff;
+ border: 1px solid #000000;
+ backdrop-filter: blur(10px);
+ padding: 25px;
+ border-radius: 15px;
+ box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+ text-align: center;
+ margin-bottom: 30px;
+ }
+ .controls-section h2 {
+ color: #000000;
+ margin-bottom: 20px;
+ font-size: 1.8em;
+ }
+ .control-buttons button {
+ background: #000000;
+ color: #fff;
+ border: 1px solid #000000;
+ padding: 12px 25px;
+ margin: 8px;
+ border-radius: 8px;
+ font-size: 1.1em;
+ cursor: pointer;
+ transition: background 0.3s ease, transform 0.2s ease; }
+ .control-buttons button:hover {
+ background: #cc0000;
+ border-color: #cc0000;
+ transform: translateY(-2px);
+ }
+ .control-buttons button:active {
+ transform: translateY(0);
+ }
+ .simulation-section {
+ background: #ffffff;
+ border: 1px solid #000000;
+ backdrop-filter: blur(10px);
+ padding: 25px;
+ border-radius: 15px;
+ box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+ margin-bottom: 30px;
+ }
+ .simulation-section h2 {
+ color: #000000;
+ margin-bottom: 20px;
+ font-size: 1.8em;
+ text-align: center;
+ }
+ .simulation-options {
+ display: flex;
+ justify-content: space-around; flex-wrap: wrap;
+ margin-bottom: 20px;
+ }
+ .simulation-options button {
+ background: #ffffff;
+ color: #000000;
+ border: 1.5px solid #ff0000;
+ padding: 10px 20px;
+ margin: 5px;
+ border-radius: 5px;
+ cursor: pointer;
+ transition: background 0.3s ease;
+ }
+ .simulation-options button:hover {
+ background: #ff0000;
+ color: #ffffff;
+ }
+ .drainage-simulation {
+ display: flex;
+ align-items: flex-end;
+ justify-content: center;
+ height: 150px;
+ background-color: #f5f5f5;
+ border-radius: 10px;
+ border: 1px solid #000000;
+ overflow: hidden;
+ position: relative;
+ } .drainage-fluid {
+ width: 100%;
+ background-color: #ff0000;
+ transition: height 1s ease-out;
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ height: 0%;
+ }
+ .drainage-text {
+ position: absolute;
+ top: 50%;
+ left: 50%;
+ transform: translate(-50%, -50%);
+ font-size: 1.2em;
+ font-weight: bold;
+ color: #000000;
+ z-index: 10;
+ }
+ .log-section {
+ background: #ffffff;
+ border: 1px solid #000000;
+ backdrop-filter: blur(10px);
+ padding: 25px;
+ border-radius: 15px;
+ box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+ } .log-section h2 {
+ color: #000000;
+ margin-bottom: 15px;
+ font-size: 1.8em;
+ text-align: center;
+ }
+ .log-container {
+ max-height: 250px;
+ overflow-y: auto;
+ border: 1px solid #000000;
+ border-radius: 8px;
+ padding: 10px;
+ background-color: #fafafa;
+ }
+ .log-entry {
+ padding: 8px 0;
+ border-bottom: 1px dashed #ccc;
+ font-size: 0.9em;
+ color: #000000;
+ }
+ .log-entry:last-child {
+ border-bottom: none;
+ }
+ .log-normal { color: #000000; }
+ .log-warning { color: #b30000; }
+ .log-emergency { color: #ff0000; font-weight: bold; } footer {
+ text-align: center;
+ padding: 20px;
+ color: rgba(255, 255, 255, 0.7);
+ margin-top: 30px;
+ font-size: 0.9em;
+ }
+ @media (max-width: 768px) {
+ .status-box {
+ flex-basis: 45%;
+ }
+ }
+ @media (max-width: 480px) {
+ .status-box {
+ flex-basis: 90%;
+ }
+ .control-buttons button {
+ width: 90%;
+ }
+ }
+ </style>
+</head>
+<body>
+ <div class="container">
+ <header>
+ <h1>GAS UNIT PACEMAKER - Anti-Complication System</h1> <p>Patient Monitoring and Simulation Interface</p>
+ </header>
+ <section class="status-section">
+ <div class="status-box" id="heartRateBox">
+ <h2>Heart Rate</h2>
+ <div class="status-value" id="heartRateValue">--</div>
+ <div class="status-label">bpm</div>
+ </div>
+ <div class="status-box" id="ecgBox">
+ <h2>ECG Signal</h2>
+ <div class="status-value" id="ecgValue">--</div>
+ <div class="status-label">Analog Value</div>
+ </div>
+ <div class="status-box" id="gasBox">
+ <h2>Gas Pressure</h2>
+ <div class="status-value" id="gasValue">--</div>
+ <div class="status-label">Analog Value</div>
+ </div>
+ <div class="status-box" id="systemStatusBox">
+ <h2>System Status</h2>
+ <div class="status-value" id="systemStatusValue">NORMAL</div>
+ <div class="status-label">Current Condition</div>
+ </div>
+ </section>
+ <section class="controls-section">
+ <h2>System Controls</h2>
+ <div class="control-buttons">
+ <button onclick="startSystem()">Start System</button> <button onclick="stopSystem()">Stop System</button>
+ <button onclick="resetSystem()">Reset System</button>
+ <button onclick="testDrainage()">Test Drainage</button>
+ </div>
+ </section>
+ <section class="simulation-section">
+ <h2>Simulation Scenarios</h2>
+ <div class="simulation-options">
+ <button onclick="simulateNormalOperation()">Normal Operation</button>
+ <button onclick="simulateHighHeartRate()">High Heart Rate</button>
+ <button onclick="simulateLowHeartRate()">Low Heart Rate</button>
+ <button onclick="simulatePneumothorax()">Pneumothorax</button>
+ <button onclick="simulateCombinedEmergency()">Combined Emergency</button>
+ </div>
+ <div class="drainage-simulation">
+ <div class="drainage-fluid" id="drainageFluid"></div>
+ <div class="drainage-text" id="drainageText">System Ready</div>
+ </div>
+ </section>
+ <section class="log-section">
+ <h2>System Log</h2>
+ <div class="log-container" id="logContainer">
+ </div>
+ </section>
+ </div>
+ <footer>
+ <p>&copy; 2025 Elif Ceren Okur. All rights reserved.</p> </footer>
+ <script>
+ const HEART_RATE_MIN = 60;
+ const HEART_RATE_MAX = 100;
+ const PNEUMOTHORAX_THRESHOLD = 600;
+ const ECG_ABNORMAL_THRESHOLD = 512;
+ const DRAINAGE_DURATION = 5000;
+ let heartRate = 75;
+ let ecgValue = 400;
+ let gasValue = 300;
+ let pneumothoraxDetected = false;
+ let ecgAbnormal = false;
+ let emergencyActive = false;
+ let systemRunning = false;
+ let drainageInProgress = false;
+ let simulationInterval;
+ let drainageTimeout;
+ function updateDisplay() {
+ document.getElementById('heartRateValue').textContent = heartRate;
+ document.getElementById('ecgValue').textContent = ecgValue;
+ document.getElementById('gasValue').textContent = gasValue;
+ let statusText = "NORMAL"; let statusClass = "status-normal";
+ if (pneumothoraxDetected && ecgAbnormal) {
+ statusText = "EMERGENCY";
+ statusClass = "status-emergency";
+ } else if (pneumothoraxDetected || ecgAbnormal) {
+ statusText = "WARNING";
+ statusClass = "status-warning";
+ }
+ document.getElementById('systemStatusValue').textContent = statusText;
+ document.getElementById('heartRateBox').className = 'status-box ' + statusClass;
+ document.getElementById('ecgBox').className = 'status-box ' + statusClass;
+ document.getElementById('gasBox').className = 'status-box ' + statusClass;
+ document.getElementById('systemStatusBox').className = 'status-box ' + statusClass;
+ }
+ function addLog(message, type = "normal") {
+ const logContainer = document.getElementById('logContainer');
+ const logEntry = document.createElement('div');
+ logEntry.className = 'log-entry log-' + type;
+ logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+ logContainer.prepend(logEntry);
+ if (logContainer.children.length > 50) {
+ logContainer.removeChild(logContainer.lastChild);
+ }
+ }
+ function showAlert(message, type = "normal") {
+ console.warn(`ALERT (${type.toUpperCase()}): ${message}`);
+ }
+ function simulateNormalOperation() {
+ if (!systemRunning) return;
+ heartRate = Math.floor(Math.random() * (HEART_RATE_MAX - HEART_RATE_MIN + 1)) + HEART_RATE_MIN;
+ ecgValue = Math.floor(Math.random() * 200) + 300;
+ gasValue = Math.floor(Math.random() * 100) + 200;
+ pneumothoraxDetected = false;
+ ecgAbnormal = false;
+ emergencyActive = false;
+ stopGasDrainageProcedure();
+ updateDisplay();
+ addLog("Normal operation.", "normal");
+ }
+ function simulateHighHeartRate() {
+ if (!systemRunning) return;
+ heartRate = Math.floor(Math.random() * 40) + 120;
+ ecgValue = Math.floor(Math.random() * 200) + 300;
+ gasValue = Math.floor(Math.random() * 100) + 200;
+ pneumothoraxDetected = false; ecgAbnormal = (heartRate > HEART_RATE_MAX);
+ emergencyActive = ecgAbnormal;
+ stopGasDrainageProcedure();
+ updateDisplay();
+ addLog(`High Heart Rate Detected: ${heartRate} bpm`, ecgAbnormal ? "warning" : "normal");
+ if (ecgAbnormal) showAlert("Warning: High Heart Rate!", "warning");
+ }
+ function simulateLowHeartRate() {
+ if (!systemRunning) return;
+ heartRate = Math.floor(Math.random() * 20) + 40;
+ ecgValue = Math.floor(Math.random() * 200) + 300;
+ gasValue = Math.floor(Math.random() * 100) + 200;
+ pneumothoraxDetected = false;
+ ecgAbnormal = (heartRate < HEART_RATE_MIN);
+ emergencyActive = ecgAbnormal;
+ stopGasDrainageProcedure();
+ updateDisplay();
+ addLog(`Low Heart Rate Detected: ${heartRate} bpm`, ecgAbnormal ? "warning" : "normal");
+ if (ecgAbnormal) showAlert("Warning: Low Heart Rate!", "warning");
+ }
+ function simulatePneumothorax() {
+ if (!systemRunning) return;
+ heartRate = Math.floor(Math.random() * (HEART_RATE_MAX - HEART_RATE_MIN + 1)) + HEART_RATE_MIN;
+ ecgValue = Math.floor(Math.random() * 200) + 300; gasValue = Math.floor(Math.random() * 400) + PNEUMOTHORAX_THRESHOLD + 50;
+ pneumothoraxDetected = (gasValue > PNEUMOTHORAX_THRESHOLD);
+ ecgAbnormal = false;
+ emergencyActive = pneumothoraxDetected;
+ if (pneumothoraxDetected && !drainageInProgress) {
+ startGasDrainageProcedure();
+ addLog("Pneumothorax detected! Automatic drainage initiated.", "emergency");
+ showAlert("EMERGENCY: Pneumothorax Detected! Initiating Drainage.", "emergency");
+ } else if (pneumothoraxDetected && drainageInProgress) {
+ addLog("Pneumothorax still detected, drainage in progress.", "warning");
+ } else {
+ stopGasDrainageProcedure();
+ addLog("Gas pressure is normal.", "normal");
+ }
+ updateDisplay();
+ }
+ function simulateCombinedEmergency() {
+ if (!systemRunning) return;
+ heartRate = Math.floor(Math.random() * 20) + 40;
+ ecgValue = ECG_ABNORMAL_THRESHOLD + Math.floor(Math.random() * 50);
+ gasValue = Math.floor(Math.random() * 400) + PNEUMOTHORAX_THRESHOLD + 50;
+ pneumothoraxDetected = (gasValue > PNEUMOTHORAX_THRESHOLD);
+ ecgAbnormal = (heartRate < HEART_RATE_MIN || ecgValue > ECG_ABNORMAL_THRESHOLD); emergencyActive = pneumothoraxDetected || ecgAbnormal;
+ if (pneumothoraxDetected && !drainageInProgress) {
+ startGasDrainageProcedure();
+ addLog("Combined Emergency: Pneumothorax detected! Automatic drainage initiated.", "emergency");
+ } else if (pneumothoraxDetected && drainageInProgress) {
+ addLog("Combined Emergency: Pneumothorax still detected, drainage in progress.", "warning");
+ } else if (ecgAbnormal) {
+ addLog("Combined Emergency: ECG abnormality detected.", "emergency");
+ } else {
+ stopGasDrainageProcedure();
+ addLog("Combined Emergency: Resolving.", "normal");
+ }
+ updateDisplay();
+ if (emergencyActive) showAlert("EMERGENCY: Combined Issues Detected!", "emergency");
+ }
+ function startGasDrainageProcedure() {
+ if (drainageInProgress) return;
+ drainageInProgress = true;
+ document.getElementById('drainageFluid').style.height = '100%';
+ document.getElementById('drainageText').textContent = 'DRAINING...';
+ addLog("Drainage procedure started.", "emergency");
+ clearTimeout(drainageTimeout);
+ drainageTimeout = setTimeout(() => {
+ stopGasDrainageProcedure(); addLog("Drainage procedure completed. Monitoring continues.", "normal");
+ showAlert("Drainage completed. Monitoring status.", "normal");
+ }, DRAINAGE_DURATION);
+ }
+ function stopGasDrainageProcedure() {
+ if (!drainageInProgress) return;
+ clearTimeout(drainageTimeout);
+ drainageInProgress = false;
+ document.getElementById('drainageFluid').style.height = '0%';
+ document.getElementById('drainageText').textContent = 'SYSTEM READY';
+ addLog("Drainage procedure stopped.", "normal");
+ }
+ function startSystem() {
+ if (systemRunning) return;
+ systemRunning = true;
+ addLog("System started.", "normal");
+ showAlert("System is now operational.", "normal");
+ updateDisplay();
+ simulationInterval = setInterval(simulateNormalOperation, 2000);
+ }
+ function stopSystem() {
+ if (!systemRunning) return;
+ systemRunning = false; clearInterval(simulationInterval);
+ stopGasDrainageProcedure();
+ addLog("System stopped.", "warning");
+ showAlert("System has been stopped.", "warning");
+ }
+ function resetSystem() {
+ stopSystem();
+ heartRate = 75;
+ ecgValue = 400;
+ gasValue = 300;
+ pneumothoraxDetected = false;
+ ecgAbnormal = false;
+ emergencyActive = false;
+ stopGasDrainageProcedure();
+
+ document.getElementById('drainageFluid').style.height = '0%';
+ document.getElementById('drainageText').textContent = 'System Ready';
+
+ addLog("System reset completed", "normal");
+ showAlert("System reset", "normal");
+ updateDisplay();
+ }
+
+ function testDrainage() {
+ addLog("Manual drainage test initiated", "normal");
+ startGasDrainageProcedure();
+ }
+
+ function init() {
+ updateDisplay();
+ addLog("System initialization complete", "normal");
+
+ setInterval(() => {
+ if (systemRunning) {
+ const status = pneumothoraxDetected || ecgAbnormal ?
+ (pneumothoraxDetected && ecgAbnormal ? "EMERGENCY" : "WARNING") :
+ "NORMAL";
+
+ addLog(`HR: ${heartRate} bpm | ECG: ${ecgValue} | GAS: ${gasValue} | STATUS: ${status}`,
+ status.toLowerCase());
+ }
+ }, 5000);
+ }
+
+ init();
+ </script>
+</body>
+</html>
